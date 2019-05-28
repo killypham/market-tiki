@@ -43,15 +43,31 @@ class BookClass {
     return BookModel(newBook).save();
   }
 
-  static async updateBook(editedBook) {
-    const { title, author, price, remainStock } = newBook;
+  // static async updateBookInfo(editedBook) {
+  //   const { title, author, price, remainStock } = editedBook;
 
-    if (!title) { return Promise.reject("Missing book title."); }
-    else if (!author) { return Promise.reject("Missing book author."); }
-    else if (!price) { return Promise.reject("Missing book price."); }
-    else if (!remainStock) { return Promise.reject("Missing book remainStock."); }
-    
-  }
+  //   if (!title) { return Promise.reject("Missing book title."); }
+  //   else if (!author) { return Promise.reject("Missing book author."); }
+  //   else if (!price) { return Promise.reject("Missing book price."); }
+  //   else if (!remainStock) { return Promise.reject("Missing book remainStock."); }
+
+  //   return this.findById(editedBook.id).then(book => {
+  //     return BookModel.findByIdAndUpdate(book._id, {
+  //       title: editedBook.title,
+  //       author: editedBook.author,
+  //       price: editedBook.price,
+  //       summary: editedBook.summary,
+  //       pageNumber: editedBook.pageNumber,
+  //       publisher: editedBook.publisher,
+  //       salePrice: editedBook.salePrice,
+  //       translator: editedBook.translator,
+  //       coverType: editedBook.coverType,
+  //       publishDate: editedBook.publishDate
+  //     })
+  //   }).catch(err => {
+  //     return Promise.reject(err);
+  //   })
+  // }
 
   /** =================================
    *               USER
@@ -62,8 +78,15 @@ class BookClass {
     return await BookModel.find();
   }
 
+  static async findById(id) {
+    if (id) {
+      return await BookModel.findById(id);
+    } else {
+      return Promise.reject("Book ID not exist.");
+    }
+  }
+
   static async findByTitle(title) {
-    console.log({ title: title });
     if (title) {
       return await BookModel.find({ title: { $regex: new RegExp(title, "i") } });
     } else {
@@ -72,7 +95,6 @@ class BookClass {
   }
 
   static async findByAuthor(author) {
-    console.log({ author: author });
     if (author) {
       return await BookModel.find({ author: { $regex: new RegExp(author, "i") } });
     } else {
