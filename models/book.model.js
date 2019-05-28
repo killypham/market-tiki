@@ -1,29 +1,30 @@
 const mongoose = require('mongoose');
-const Shema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 const BookSchema = new Schema({
   title: {
     type: String,
-    required: [true, "Require title."],
+    required: true
   },
-  summary: String,
-  pageNumber: Number,
-  publisher: String,
   author: {
     type: String,
-    required: [true, "Require author."]
+    required: true
   },
   price: {
     type: Number,
     required: true
   },
-  translator: String,
-  coverType: String,
-  publishDate: Date,
   remainStock: {
     type: Number,
-    required: [true, "Require remain stock."]
-  }
+    required: true
+  },
+  summary: String,
+  pageNumber: Number,
+  publisher: String,
+  salePrice: Number,
+  translator: String,
+  coverType: String,
+  publishDate: Date
 })
 
 class BookClass {
@@ -31,32 +32,55 @@ class BookClass {
    *               ADMIN
    * ==================================
    */
-  async addBook(newBook) {
+  static async addBook(newBook) {
     const { title, author, price, remainStock } = newBook;
-    if(!title || !author || !price || !remainStock) {
-      return Promise.reject("Missing book info.");
-    }
+
+    if (!title) { return Promise.reject("Missing book title."); }
+    else if (!author) { return Promise.reject("Missing book author."); }
+    else if (!price) { return Promise.reject("Missing book price."); }
+    else if (!remainStock) { return Promise.reject("Missing book remainStock."); }
+
     return BookModel(newBook).save();
   }
-  async updateBook(editedBook) {
+
+  static async updateBook(editedBook) {
     const { title, author, price, remainStock } = newBook;
-    if(!title || !author || !price || !remainStock) {
-      return Promise.reject("Missing book info.");
-    }
-  }
-  static async findBookByTitle(title) {
-    if(title) {
-      return await BookModel.find({title: title});
-    } else {
-      throw Error("Require title.");
-    }
+
+    if (!title) { return Promise.reject("Missing book title."); }
+    else if (!author) { return Promise.reject("Missing book author."); }
+    else if (!price) { return Promise.reject("Missing book price."); }
+    else if (!remainStock) { return Promise.reject("Missing book remainStock."); }
+    
   }
 
   /** =================================
-   *               ADMIN
+   *               USER
    * ==================================
    */
+
+  static async getListBooks() {
+    return await BookModel.find();
+  }
+
+  static async findByTitle(title) {
+    console.log({ title: title });
+    if (title) {
+      return await BookModel.find({ title: { $regex: new RegExp(title, "i") } });
+    } else {
+      return Promise.reject("Keyword is empty.");
+    }
+  }
+
+  static async findByAuthor(author) {
+    console.log({ author: author });
+    if (author) {
+      return await BookModel.find({ author: { $regex: new RegExp(author, "i") } });
+    } else {
+      return Promise.reject("Keyword is empty.");
+    }
+  }
 }
 
+const ModelName = 'Book'
 const BookModel = mongoose.model(ModelName, BookSchema);
 module.exports = BookClass;
