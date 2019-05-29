@@ -43,31 +43,20 @@ class BookClass {
     return BookModel(newBook).save();
   }
 
-  // static async updateBookInfo(editedBook) {
-  //   const { title, author, price, remainStock } = editedBook;
+  static async updateBookInfo(editedBook) {
+    const { title, author, price, remainStock } = editedBook;
 
-  //   if (!title) { return Promise.reject("Missing book title."); }
-  //   else if (!author) { return Promise.reject("Missing book author."); }
-  //   else if (!price) { return Promise.reject("Missing book price."); }
-  //   else if (!remainStock) { return Promise.reject("Missing book remainStock."); }
+    if (!title) { return Promise.reject("Missing book title."); }
+    else if (!author) { return Promise.reject("Missing book author."); }
+    else if (!price) { return Promise.reject("Missing book price."); }
+    else if (!remainStock) { return Promise.reject("Missing book remain stock."); }
 
-  //   return this.findById(editedBook.id).then(book => {
-  //     return BookModel.findByIdAndUpdate(book._id, {
-  //       title: editedBook.title,
-  //       author: editedBook.author,
-  //       price: editedBook.price,
-  //       summary: editedBook.summary,
-  //       pageNumber: editedBook.pageNumber,
-  //       publisher: editedBook.publisher,
-  //       salePrice: editedBook.salePrice,
-  //       translator: editedBook.translator,
-  //       coverType: editedBook.coverType,
-  //       publishDate: editedBook.publishDate
-  //     })
-  //   }).catch(err => {
-  //     return Promise.reject(err);
-  //   })
-  // }
+    return this.findById(editedBook.id).then(() => {
+      return BookModel.findByIdAndUpdate(editedBook.id, editedBook, {new: true});
+    }).catch(err => {
+      return Promise.reject({msg: "Book ID is invalid", err: err});
+    })
+  }
 
   /** =================================
    *               USER
