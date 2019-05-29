@@ -1,16 +1,6 @@
 const router = require('express').Router()
 const Book = require('../../models/book.model');
 
-// Find by book title
-router.get('/search', (req, res) => {
-  const result = Book.findByTitle(req.query.q);
-
-  result.then(books => {
-    res.status(200).json(books);
-  }).catch(err => {
-    res.status(500).json({books: null, err: err});
-  })
-})
 
 router.get('/', (req, res, next) => {
   const result = Book.getListBooks();
@@ -41,6 +31,27 @@ router.put('/', (req, res) => {
     res.status(200).json(updatedBook);
   }).catch(err => {
     res.status(500).json({updatedBook: null, err: err});
+  })
+})
+
+// Find book by title
+router.get('/search', (req, res) => {
+  const result = Book.findByTitle(req.query.q);
+
+  result.then(books => {
+    res.status(200).json(books);
+  }).catch(err => {
+    res.status(500).json({books: null, err: err});
+  })
+})
+
+// View book detail
+router.get('/detail', (req, res) => {
+  const result = Book.findById(req.query.bookId);
+  result.then(bookDetail => {
+    res.status(200).json(bookDetail);
+  }).catch(err => {
+    res.status(500).json(err);
   })
 })
 
