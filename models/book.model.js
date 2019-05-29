@@ -58,6 +58,10 @@ class BookClass {
     })
   }
 
+  static async deleteBookById(id) {
+    return BookModel.findByIdAndDelete(id);
+  }
+
   /** =================================
    *               USER
    * ==================================

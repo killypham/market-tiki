@@ -34,6 +34,14 @@ router.put('/', (req, res) => {
   })
 })
 
+router.delete('/:bookId', (req, res) => {
+  Book.deleteBookById(req.params.bookId).then(() => {
+    res.status(200).json("Book deleted");
+  }).catch(err => {
+    res.status(500).json({msg: "Cannot delete", err: err});
+  })
+})
+
 // Find book by title
 router.get('/search', (req, res) => {
   const result = Book.findByTitle(req.query.q);
