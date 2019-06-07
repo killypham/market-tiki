@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="javascripts/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js"></script>
+  <title>Document</title>
+  <script>
+    $(document).ready(function() {
+      $("#registForm").validate({
+        rules: {
+          username: "required",
+          useremail: "email",
+          password: {
+            required: true,
+            minlength: 4
+          },
+          password_confirm:{
+            equalTo: "#password"
+          }
+        },
+        messages: {
+          username: "Nhập vào tên người dùng",
+          useremail: "Nhập vào email",
+          password: {
+            required: "Nhập vào mật khẩu",
+            minlength: "Mật khẩu phải có ít nhất 4 kí tự"
+          },
+          password_confirm: "Mật khẩu xác nhận phải giống mật khẩu"
+        }
+      });
+    });
+
+    // gui yeu cau dang ki tai khoan
+
+    function sendRegisterRequest(){
+      $.post('/register', {userName: $('#username').val(), useremail: $('#email').val(), password: $('#password').val()});
+    }
+  </script>
+
+</head>
+<body>
+  <div class="container">
+    <form id="registForm" class="form-horizontal" action='' method="POST">
+      <fieldset>
+        <div id="legend">
+          <legend class="">Register</legend>
+        </div>
+        <div class="control-group">
+          <!-- Username -->
+          <label class="control-label"  for="username">Username</label>
+          <div class="controls">
+            <input type="text" id="username" name="username" placeholder="" class="input-xlarge">
+            <span class="error"></span>
+            <p class="help-block">Username can contain any letters or numbers, without spaces</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <!-- E-mail -->
+          <label class="control-label" for="email">E-mail</label>
+          <div class="controls">
+            <input type="text" id="email" name="useremail" placeholder="" class="input-xlarge">
+            <p class="help-block">Please provide your E-mail</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <!-- Password-->
+          <label class="control-label" for="password">Password</label>
+          <div class="controls">
+            <input type="password" id="password" name="password" placeholder="" class="input-xlarge">
+            <p class="help-block">Password should be at least 4 characters</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <!-- Password -->
+          <label class="control-label"  for="password_confirm">Password (Confirm)</label>
+          <div class="controls">
+            <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="input-xlarge">
+            <p class="help-block">Please confirm password</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <!-- Button -->
+          <div class="controls">
+            <button class="btn btn-success" onclick="sendRegisterRequest()">Register</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</body>
+</html>
