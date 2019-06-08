@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
     "start": "node ./bin/www",
     "serve": "nodemon ./bin/www"
+=======
+    "start": "node ./bin/www"
+>>>>>>> 6467f184b811e6cae480c61423caf83c5e7b498b
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -14,7 +18,11 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "mongoose": "^5.5.11",
+<<<<<<< HEAD
     "morgan": "~1.9.1",
     "nodemon": "^1.19.1"
+=======
+    "morgan": "~1.9.1"
+>>>>>>> 6467f184b811e6cae480c61423caf83c5e7b498b
   }
 }
