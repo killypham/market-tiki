@@ -41,7 +41,7 @@ app.use(function(err, req, res, next) {
 
 //connect to mongodb
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/temp', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/temp', {useNewUrlParser: true, useFindAndModify: false});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {

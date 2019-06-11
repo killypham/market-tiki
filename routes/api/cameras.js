@@ -15,7 +15,6 @@ router.post('/add-new-camera', function (req, res, next) {
 
 // get all cameras OK
 router.get('/getlist', function (req, res, next) {
-  console.log('1');
   CameraModel.getListCamera().then(allCameras => {
     res.status(200).json(allCameras);
   }).catch(err => {

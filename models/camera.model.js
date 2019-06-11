@@ -74,8 +74,7 @@ class CameraClass {
 
   static async findByBrand(cameraBrand) {
     if (!cameraBrand) return Promise.reject("Brand khong duoc trong!");
-    // else return await CameraModel.find({ brand: { $regex: RegExp(cameraBrand), $option: 'i' } });
-    else return await CameraModel.find({ brand: cameraBrand });
+    else return await CameraModel.find({ brand: { $regex: new RegExp(cameraBrand, 'i' )} });
   }
   // end USERS
 }
