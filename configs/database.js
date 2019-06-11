@@ -8,7 +8,8 @@ class Database {
   _connect() {
     mongoose.connect(uri, {
       useNewUrlParser: true,
-      useFindAndModify: false
+      useFindAndModify: false,
+      useCreateIndex: true
     }).then(() => {
       console.log("Database connected!");
     }).catch(err => {
