@@ -36,12 +36,14 @@ const UserSchema = new Schema({
 // Set default username = email
 UserSchema.pre('save', function (next) {
   this.userName = this.get('email')
+  this.userName = this.userName.split('@')[0];
   next()
 })
 
 // Check exist user email
 UserSchema.post('save', function (err, doc, next) {
   if (err.name === 'MongoError' && err.code === 11000) {
+    // Recheck here. Maybe wrong message error when update `userName` have same prefix with `email` exist
     throw 'Email đã tồn tại'
   }
   else next()
@@ -78,6 +80,40 @@ class User {
       _id: userExist._id,
       email: userExist.email
     })
+  }
+
+  // Update user profile
+  static updateUserProfile(userID, updateInfo) {
+    const userExist = UserModel.findById(userID);
+    if (!userExist) {
+      throw "User not found"
+    }
+
+    // Update user info
+    return UserModel.findByIdAndUpdate(userID, {
+      email: updateInfo.email,
+      userName: updateInfo.userName,
+      address: updateInfo.address
+    }, {
+        new: true
+      });
+  }
+
+  static async changePassword(userID, passwordInfo) {
+    // Check valid input
+    if(!passwordInfo.currentPassword) throw "Chưa nhập mật khẩu cũ";
+    if(!passwordInfo.newPassword) throw "Chưa nhập mật khẩu mới";
+
+    const userExist = await UserModel.findById(userID);
+    
+    // Check valid current password
+    const validCurrent = Utils.ValidatePassword(passwordInfo.currentPassword, userExist.password);
+    if(!validCurrent) throw "Mật khẩu cũ không đúng";
+
+    // Hash new password
+    const newValidPassword = Utils.HashPassword(passwordInfo.newPassword);
+
+    return UserModel.findByIdAndUpdate(userID, {password: newValidPassword}, {new: true});
   }
 
   static getAllUser() {
