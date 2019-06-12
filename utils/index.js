@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken');
 
 const Utils = {
   ValidateUser: function (info) {
+    // Check exist input
+    if(!info.email) throw "Chưa nhập email"
+    if(!info.password) throw "Chưa nhập mật khẩu"
+    
     const schema = Joi.object().keys({
       email: Joi.string().required().email().error(error => {
         if (error[0].type === 'string.email')
@@ -36,8 +40,29 @@ const Utils = {
   },
 
   createToken: function (info) {
-    return jwt.sign(info, process.env.SECRET_TOKEN, {expiresIn: '1d'});
+    return jwt.sign(info, process.env.SECRET_TOKEN, { expiresIn: '1d' });
+  }
+}
+
+const Auth = {
+  verifyToken: function (req, res, next) {
+    const token = req.header('auth-token');
+    if (!token) {
+      return res.status(401).send("Access denied. Redirect to login");
+    }
+
+    try {
+      const verified = jwt.verify(token, process.env.SECRET_TOKEN);
+      console.log({verified: verified});
+      
+      req.user = verified;
+
+      next();
+    } catch (error) {
+      res.status(400).send("Invalid token. Redirect to login");
+    }
   }
 }
 
 module.exports = Utils;
+module.exports.Auth = Auth;
