@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Utils = require('../utils');
 
 const UserSchema = new Schema({
   email: {
@@ -32,11 +33,13 @@ const UserSchema = new Schema({
   }
 })
 
+// Set default username = email
 UserSchema.pre('save', function (next) {
   this.userName = this.get('email')
   next()
 })
 
+// Check exist user email
 UserSchema.post('save', function (err, doc, next) {
   if (err.name === 'MongoError' && err.code === 11000) {
     throw 'Email đã tồn tại'
@@ -45,41 +48,42 @@ UserSchema.post('save', function (err, doc, next) {
 })
 
 class User {
-  static async RegisterUser(userInfo) {
-    const { error } = await Utils.ValidateUser(userInfo);
-    if (error) throw error;
+  static async registerByEmail(userInfo) {
+    // Validate user input
+    await Utils.ValidateUser(userInfo);
+
+    // Hash password
+    const hashedPassword = Utils.HashPassword(userInfo.password);
+    userInfo.password = hashedPassword;
 
     return UserModel(userInfo).save();
   }
 
-  static GetAllUser() {
+  static async loginByEmail(userInfo) {
+    // Validate user input
+    await Utils.ValidateUser(userInfo);
+
+    const userExist = await UserModel.findOne({ email: userInfo.email });
+    if (userExist) {
+      // Check valid password
+      const validPassword = Utils.ValidatePassword(userInfo.password, userExist.password);
+      if (!validPassword) throw "Tài khoản hoặc mật khẩu không đúng"
+    }
+    else {
+      throw "Tài khoản hoặc mật khẩu không đúng"
+    }
+
+    // Create token
+    return Utils.createToken({
+      _id: userExist._id,
+      email: userExist.email
+    })
+  }
+
+  static getAllUser() {
     return UserModel.find();
   }
 
-  static async FindUserByEmail(email) {
-    if (email) {
-      return UserModel.findOne({ email });
-    } else {
-      throw "Mising email"
-    }
-  }
-}
-
-class Utils {
-  static async ValidateUser(info) {
-    if (!info) throw "Không có thông tin đăng ký"
-    if (!info.email) throw "Chưa nhập email"
-    if (!info.password) throw "Chưa nhập mật khẩu"
-
-    const userExist = await UserModel.findOne({ email: info.email });
-    if (userExist)
-      return { error: "Email đã tồn tại" }
-
-    if (info.password.length < 6)
-      return { error: "Mật khẩu phải nhiều hơn 6 kí tự" }
-
-    return { error: null }
-  }
 }
 
 const UserModelName = 'User';
