@@ -5,11 +5,17 @@ const bodyParser = require('body-parser');
 
 // register user
 router.post('/registeruser', function (req, res, next) {
-  UserModel.registerUser(req.body).then(newUser => {
-    res.status(200).json(newUser);
-  }).catch(err => {
-    res.status(500).json({ newUser: null, err: err });
-  })
+  UserModel.findUserByUserName(req.body.userName).then(existUser => {
+    if (existUser)
+      res.status(500).json("Người dùng đã tồn tại!");
+    else {
+      UserModel.registerUser(req.body).then(newUser => {
+        res.status(200).json({ newUser: newUser })
+      }).catch(err => {
+        res.status(500).json({ newUser: null, err: err });
+      })
+    }
+  });
 })
 
 // login user
@@ -37,7 +43,7 @@ router.post('/deleteuser', function (req, res, next) {
   UserModel.deleteUser(req.body.id).then(deletedUser => {
     res.status(200).json(deletedUser);
   }).catch(err => {
-    res.status(500).json({err: err});
+    res.status(500).json({ err: err });
   })
 })
 

@@ -37,9 +37,6 @@ class UserClass {
     if (!userName || !email || !password)
       return Promise.reject("Người dùng không hợp lệ!");
 
-    // đoạn này chưa fix được
-    // if (UserModel.findUserByUserName(userName)) return Promise.reject("Người dùng đã tồn tại!");
-
     return UserModel(newUser).save();
   }
 
