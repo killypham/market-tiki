@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
 const userSchema = new schema({
-  userName: {
+  username: {
     type: String,
     require: [true, 'Tên người dùng trống!']
   },
@@ -25,16 +25,16 @@ const userSchema = new schema({
 const UserModel = mongoose.model('User', userSchema);
 
 class UserClass {
-  static async findUserByUserName(userNameInput) {
-    if (!userNameInput) return Promise.reject("Tên người dùng không được trống!");
+  static async findUserByUserName(usernameInput) {
+    if (!usernameInput) return Promise.reject("Tên người dùng không được trống!");
 
-    return await UserModel.findOne({ userName: { $regex: new RegExp(userNameInput, 'i') } });
+    return await UserModel.findOne({ username: { $regex: new RegExp(usernameInput, 'i') } });
   }
 
   static async registerUser(newUser) {
-    const { userName, email, password } = newUser;
+    const { username, email, password } = newUser;
 
-    if (!userName || !email || !password)
+    if (!username || !email || !password)
       return Promise.reject("Người dùng không hợp lệ!");
 
     return UserModel(newUser).save();
